@@ -1,16 +1,20 @@
 import {TestBed} from '@angular/core/testing';
 
 import {RestaurantsService} from './restaurants.service';
-import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
+import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {AppSettings} from './app-settings.service';
 
 describe('RestaurantsService', () => {
   let httpBackend: HttpTestingController;
   let restaurantService: RestaurantsService;
-
+  const mockAppSettings = {
+    googlePlacePhotoUrl: 'mock_googlePlacePhotoUrl',
+    googleMapsKey: 'mock_googleMapsKey'
+  };
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [RestaurantsService]
+      providers: [RestaurantsService, {provide: AppSettings, useValue: mockAppSettings}]
     });
     httpBackend = TestBed.get(HttpTestingController);
     restaurantService = TestBed.get(RestaurantsService);
@@ -18,29 +22,29 @@ describe('RestaurantsService', () => {
 
   it('should request backend to get nearby restaurants', () => {
 
-    let photoReference = "reference1";
+    let photoReference = 'reference1';
     const expectedResponse = [
       {
-        "id": "id",
-        "name": "name",
-        "lat": 0,
-        "lng": 0,
-        "photosReference":[photoReference]
+        'id': 'id',
+        'name': 'name',
+        'lat': 0,
+        'lng': 0,
+        'photosReference': [photoReference],
       }
     ];
 
     restaurantService.getNearbyRestaurants().then(restaurants => {
 
-      const googlePlacePhoto = 'https://developers.google.com/places/web-service/photos'
-      const apiKey = "AIzaSyBvLjHOMjmRVWELPcxI-YJ43rGJk2-cw2w";
-      const realUrlPhoto = (googlePlacePhoto + "?maxwidth=400&photoreference=" + photoReference + "&key=" + apiKey);
+      let googlePlacePhotoUrl = mockAppSettings.googlePlacePhotoUrl;
+      let googleMapsKey = mockAppSettings.googleMapsKey;
+      const realUrlPhoto = googlePlacePhotoUrl + '?maxwidth=400&photoreference=' + photoReference + '&key=' + googleMapsKey;
 
       expect(restaurants).toEqual([{
         id: 'id',
         name: 'name',
         lat: 0,
         lng: 0,
-        photos:[ realUrlPhoto]
+        photos: [realUrlPhoto]
       }]);
     });
     httpBackend.expectOne('/api/v1/restaurants').flush(expectedResponse);

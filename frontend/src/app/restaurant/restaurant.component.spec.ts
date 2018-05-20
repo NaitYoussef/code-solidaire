@@ -24,8 +24,9 @@ describe('RestaurantComponent', () => {
     component.restaurant = {
       id:'1',
       name:'name',
-      "lat": 0,
-      "lng": 0
+      lat: 0,
+      lng: 0,
+      photos:[]
     };
     fixture.detectChanges();
     const restaurantName=element.querySelector('.restaurant-name').textContent.trim();

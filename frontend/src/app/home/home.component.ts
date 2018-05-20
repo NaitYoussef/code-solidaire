@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {Restaurant, RestaurantsService} from '../shared/restaurants.service';
 
 @Component({
   selector: 'app-home',
@@ -7,9 +8,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  public restaurants: Restaurant[] = [];
+
+  constructor(private restaurantsService: RestaurantsService) {
+    this.restaurantsService.getNearbyRestaurants().then(restaurants => this.restaurants = restaurants);
+  }
 
   ngOnInit() {
+
   }
 
 }
